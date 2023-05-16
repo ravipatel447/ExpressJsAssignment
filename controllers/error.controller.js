@@ -34,12 +34,10 @@ module.exports = async (err, req, res, next) => {
     if (err.redirects) {
       return res.redirect(err.url);
     }
-    console.log(err);
-    return res.send("sdfsdfsd");
-    // return res.render("error", {
-    //   message,
-    //   status,
-    //   error: JSON.stringify(err),
-    // });
+    return res.status(404).send({
+      message,
+      status,
+      error: JSON.stringify(err),
+    });
   }
 };

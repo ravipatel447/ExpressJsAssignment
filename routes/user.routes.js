@@ -21,5 +21,6 @@ router.patch(
 );
 
 router.delete("/me", auth, userController.deleteUserProfile);
+router.delete("/me/avatar", auth, userController.removeAvatar);
 
 module.exports = router;

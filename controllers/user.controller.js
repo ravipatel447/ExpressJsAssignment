@@ -33,6 +33,16 @@ const uploadUserAvatar = catchAsync(async (req, res) => {
   );
 });
 
+const removeAvatar = catchAsync(async (req, res) => {
+  const user = await userService.removeProfileImage(req.user);
+  return response.successResponse(
+    res,
+    httpStatus.CREATED,
+    { user },
+    userMessages.success.USER_PROFILE_REMOVE_SUCCESS
+  );
+});
+
 const deleteUserProfile = catchAsync(async (req, res) => {
   await userService.deleteUserById(req.user._id);
   return response.successResponse(
@@ -47,5 +57,6 @@ module.exports = {
   getUserProfile,
   updateUserProfile,
   uploadUserAvatar,
+  removeAvatar,
   deleteUserProfile,
 };
