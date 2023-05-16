@@ -1,4 +1,6 @@
 const httpStatus = require("http-status");
+const multer = require("multer");
+const path = require("path");
 const { User } = require("../models");
 const ApiError = require("../utils/ApiError");
 const { userMessages } = require("../messages");
@@ -10,6 +12,25 @@ const { userMessages } = require("../messages");
  */
 const createUser = async (body) => {
   const user = new User(body);
+  return user.save();
+};
+
+/**
+ * @param {String} url urlString
+ * @param {Object} user user Object
+ * @returns {Promise<User>}
+ */
+const uploadProfileImage = async (url, user) => {
+  user.profileUrl = url;
+  return user.save();
+};
+
+/**
+ * @param {Object} user user Object
+ * @returns {Promise<User>}
+ */
+const removeProfileImage = async (user) => {
+  user.profileUrl = "https://i.stack.imgur.com/l60Hf.png";
   return user.save();
 };
 
@@ -92,12 +113,40 @@ const deleteUserById = async (id, filters = {}) => {
   return user;
 };
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "Assets/Avatar");
+  },
+  filename: function (req, file, cb) {
+    const userId = req.user._id;
+    const mimetype = file.mimetype.split("/")[1];
+    cb(null, file.fieldname + "-" + userId + "." + mimetype);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error("Please Upload png,jpg or jpeg image"), false);
+  }
+};
+
+const uploadProfileMulter = multer({ storage, fileFilter });
+
 module.exports = {
   createUser,
+  uploadProfileImage,
+  removeProfileImage,
   getUsers,
   getUserByFilter,
   getUserById,
   updateUserById,
   deleteUserById,
   updateUserProfile,
+  uploadProfileMulter,
 };

@@ -23,6 +23,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    profileUrl: {
+      type: String,
+      require: false,
+      default: "https://i.stack.imgur.com/l60Hf.png",
+    },
     tokens: {
       type: [{ token: String }],
     },
