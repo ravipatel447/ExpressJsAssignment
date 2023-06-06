@@ -11,16 +11,28 @@ const ApiError = require("./utils/ApiError");
 const httpStatus = require("http-status");
 const catchAsync = require("./utils/catchAsync");
 const { tokenMessages } = require("./messages");
-
+const swaggerDocs = require("./utils/swagger");
 const app = express();
+const port = config.system.port;
 
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-
+/**
+ * @openapi
+ * /api/v1:
+ *   use:
+ *     tags:
+ *       - global
+ *     description: User Login
+ *     responses:
+ *       200:
+ *         description: Returns a User Object
+ */
 app.use("/api/v1", routes);
 app.use(express.static("public"));
 app.use("/avatar", express.static(path.join(__dirname, "Assets", "Avatar")));
+swaggerDocs(app, port);
 // error handler
 app.all(
   "*",
@@ -32,8 +44,6 @@ app.all(
   })
 );
 app.use(errorController);
-
-const port = config.system.port;
 
 database
   ._connect()
