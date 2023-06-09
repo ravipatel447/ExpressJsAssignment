@@ -1,9 +1,9 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const database = require("./db/Database");
-const config = require("./config/config");
+require("dotenv").config({ path: "../.env" });
+import * as express from "express";
+import cors from "cors";
+import path from "path";
+import database from "./db/Database";
+import { config } from "./config";
 const { errorController } = require("./controllers");
 const routes = require("./routes");
 const cookieParser = require("cookie-parser");
@@ -18,17 +18,7 @@ const port = config.system.port;
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-/**
- * @openapi
- * /api/v1:
- *   use:
- *     tags:
- *       - global
- *     description: User Login
- *     responses:
- *       200:
- *         description: Returns a User Object
- */
+
 app.use("/api/v1", routes);
 app.use(express.static("public"));
 app.use("/avatar", express.static(path.join(__dirname, "Assets", "Avatar")));

@@ -1,9 +1,9 @@
-const httpStatus = require("http-status");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const ApiError = require("../utils/ApiError");
-const { tokenMessages } = require("../messages");
-
+import httpStatus from "http-status";
+import mongoose from "mongoose";
+import * as bcrypt from "bcrypt";
+import { ApiError } from "../utils/ApiError";
+import { tokenMessages } from "../messages";
+import { IUser } from "src/types";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -55,9 +55,9 @@ userSchema.statics.login = async function (email, password) {
 
 /**
  * deleting few fields before sending it to user!
- * @returns {Object<User>}
+ * @returns {Partial<typeof userSchema>}
  */
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function (): Partial<typeof userSchema> {
   const user = this.toObject();
   delete user.password;
   delete user.createdAt;
@@ -69,7 +69,7 @@ userSchema.methods.toJSON = function () {
 /**
  * Hashing the password before storing the actual user into the database!
  */
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next): Promise<void> {
   const user = this;
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
@@ -79,11 +79,10 @@ userSchema.pre("save", async function (next) {
 /**
  * Delete relational Data with User
  */
-userSchema.pre("remove", async function (next) {
+userSchema.pre("remove", async function (next): Promise<void> {
   const user = this;
   // await Task.deleteMany({ owner: user._id })
   next();
 });
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+export const User = mongoose.model<IUser>("User", userSchema);

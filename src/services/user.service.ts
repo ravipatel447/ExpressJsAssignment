@@ -1,16 +1,15 @@
-const httpStatus = require("http-status");
-const multer = require("multer");
-const path = require("path");
-const { User } = require("../models");
-const ApiError = require("../utils/ApiError");
-const { userMessages } = require("../messages");
+import httpStatus from "http-status";
+import multer from "multer";
+import { User } from "../models";
+import { ApiError } from "../utils/ApiError";
+import { userMessages } from "../messages";
 
 /**
  * create User from body
  * @param {Object} body
  * @returns {Promise<User>}
  */
-const createUser = async (body) => {
+export const createUser = async (body) => {
   const user = new User(body);
   return user.save();
 };
@@ -20,7 +19,7 @@ const createUser = async (body) => {
  * @param {Object} user user Object
  * @returns {Promise<User>}
  */
-const uploadProfileImage = async (url, user) => {
+export const uploadProfileImage = async (url, user) => {
   user.profileUrl = url;
   return user.save();
 };
@@ -29,7 +28,7 @@ const uploadProfileImage = async (url, user) => {
  * @param {Object} user user Object
  * @returns {Promise<User>}
  */
-const removeProfileImage = async (user) => {
+export const removeProfileImage = async (user) => {
   user.profileUrl = "https://i.stack.imgur.com/l60Hf.png";
   return user.save();
 };
@@ -39,7 +38,7 @@ const removeProfileImage = async (user) => {
  * @param {Object} filters
  * @returns {Array<Promise<User>>}
  */
-const getUsers = async (filters = {}) => {
+export const getUsers = async (filters = {}) => {
   return User.find(filters);
 };
 
@@ -48,7 +47,7 @@ const getUsers = async (filters = {}) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-const getUserByFilter = async (filters = {}) => {
+export const getUserByFilter = async (filters = {}) => {
   return User.findOne(filters);
 };
 
@@ -58,7 +57,7 @@ const getUserByFilter = async (filters = {}) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-const getUserById = async (id, filters) => {
+export const getUserById = async (id, filters) => {
   return getUserByFilter({ _id: id, ...filters });
 };
 
@@ -69,7 +68,7 @@ const getUserById = async (id, filters) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-const updateUserById = async (id, body, filters = {}) => {
+export const updateUserById = async (id, body, filters = {}) => {
   const user = await User.findOneAndUpdate({ _id: id, ...filters }, body, {
     runValidators: true,
     new: true,
@@ -88,7 +87,7 @@ const updateUserById = async (id, body, filters = {}) => {
  * @param {Object} body updates
  * @returns {Promise<User>}
  */
-const updateUserProfile = async (user, body) => {
+export const updateUserProfile = async (user, body) => {
   const updates = Object.keys(body);
   updates.forEach((update) => {
     user[update] = body[update];
@@ -102,7 +101,7 @@ const updateUserProfile = async (user, body) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-const deleteUserById = async (id, filters = {}) => {
+export const deleteUserById = async (id, filters = {}) => {
   const user = await User.findOneAndRemove({ _id: id, ...filters });
   if (!user) {
     throw new ApiError(
@@ -136,17 +135,4 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const uploadProfileMulter = multer({ storage, fileFilter });
-
-module.exports = {
-  createUser,
-  uploadProfileImage,
-  removeProfileImage,
-  getUsers,
-  getUserByFilter,
-  getUserById,
-  updateUserById,
-  deleteUserById,
-  updateUserProfile,
-  uploadProfileMulter,
-};
+export const uploadProfileMulter = multer({ storage, fileFilter });

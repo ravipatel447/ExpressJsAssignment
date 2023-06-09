@@ -1,4 +1,4 @@
-module.exports = {
+export const tokenMessages = {
   error: {
     INVALID_TOKEN: "Invalid Token",
     TOKEN_REQUIRED: "token required!",

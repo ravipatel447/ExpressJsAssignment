@@ -1,4 +1,4 @@
-module.exports = {
+export const userMessages = {
   error: {
     USER_NOT_FOUND: "user not found!",
     INVALID_UPDATES: "Invalid Updates",

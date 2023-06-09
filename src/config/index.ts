@@ -1,4 +1,4 @@
-module.exports = {
+export const config = {
   mongodb: {
     url: process.env.MONGODB_URL,
     port: process.env.MONGODB_PORT,

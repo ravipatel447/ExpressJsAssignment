@@ -1,27 +1,10 @@
-const httpStatus = require("http-status");
-const { User } = require("../models");
-const { userService, tokenService } = require("../services");
-const { userMessages } = require("../messages");
-const catchAsync = require("../utils/catchAsync");
-const response = require("../utils/response");
-
-const getLoginPage = catchAsync(async (req, res) => {
-  if (req.user) {
-    return res.redirect("/");
-  }
-  return res.status(200).render("auth/login", {
-    title: "Login Client",
-  });
-});
-
-const getRegisterPage = catchAsync(async (req, res) => {
-  if (req.user) {
-    return res.redirect("/");
-  }
-  return res.status(200).render("auth/register", {
-    title: "Register Client",
-  });
-});
+import httpStatus from "http-status";
+import { User } from "../models";
+import { userService, tokenService } from "../services";
+import { userMessages } from "../messages";
+import { catchAsync } from "../utils/catchAsync";
+import { response } from "../utils/response";
+import { Request, Response } from "express";
 
 const loginUser = catchAsync(async (req, res) => {
   const { body } = req;
@@ -36,7 +19,7 @@ const loginUser = catchAsync(async (req, res) => {
   );
 });
 
-const registerUser = catchAsync(async (req, res) => {
+const registerUser = catchAsync(async (req: Request, res: Response) => {
   const { body } = req;
   const user = await userService.createUser(body);
   const token = await tokenService.generateUserToken(user);
@@ -58,16 +41,8 @@ const getCurrentUserProfile = catchAsync(async (req, res) => {
   );
 });
 
-const authLogoutRender = catchAsync(async (req, res) => {
-  res.clearCookie("token");
-  return res.redirect("/");
-});
-
 module.exports = {
   loginUser,
   registerUser,
   getCurrentUserProfile,
-  getLoginPage,
-  getRegisterPage,
-  authLogoutRender,
 };

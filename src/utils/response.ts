@@ -1,5 +1,6 @@
-module.exports = {
-  successResponse(res, status, data, message) {
+import { Response } from "express";
+export const response = {
+  successResponse(res: Response, status: number, data: any, message: string) {
     return res.status(status).send({
       status,
       message,
@@ -7,7 +8,7 @@ module.exports = {
       error: false,
     });
   },
-  errorResponse(res, status, data, message) {
+  errorResponse(res: Response, status: number, data: any, message: string) {
     return res.status(status).send({
       status,
       message,

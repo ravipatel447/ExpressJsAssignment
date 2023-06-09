@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const config = require("../config/config");
+import mongoose from "mongoose";
+import config from "../config";
+
 class Database {
   url = config.mongodb.url;
   port = config.mongodb.port;
@@ -13,4 +14,6 @@ class Database {
   }
 }
 
-module.exports = new Database();
+const database = new Database();
+
+export default database;
