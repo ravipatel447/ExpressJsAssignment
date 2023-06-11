@@ -1,3 +1,3 @@
-module.exports.authController = require("./auth.controller");
-module.exports.errorController = require("./error.controller");
-module.exports.userController = require("./user.controller");
+export * as authController from "./auth.controller";
+export * from "./error.controller";
+export * as userController from "./user.controller";

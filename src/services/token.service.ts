@@ -1,4 +1,4 @@
-import httpStatus from "http-status";
+import { BAD_REQUEST } from "http-status";
 import * as jwt from "jsonwebtoken";
 import { User } from "../models";
 import { config } from "../config";
@@ -31,10 +31,7 @@ export const verifyToken = async (token) => {
     "tokens.token": token,
   });
   if (!user) {
-    throw new ApiError(
-      tokenMessages.error.INVALID_TOKEN,
-      httpStatus.BAD_REQUEST
-    );
+    throw new ApiError(tokenMessages.error.INVALID_TOKEN, BAD_REQUEST);
   }
   return user;
 };

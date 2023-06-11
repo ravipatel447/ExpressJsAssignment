@@ -1,17 +1,19 @@
-const mongoose = require("mongoose");
-const config = require("../config/config");
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("mongoose");
+const config_1 = require("../config");
 class Database {
-    constructor() {
-        this.url = config.mongodb.url;
-        this.port = config.mongodb.port;
-        this.database = config.mongodb.database;
-    }
+    url = config_1.config.mongodb.url;
+    port = config_1.config.mongodb.port;
+    database = config_1.config.mongodb.database;
     get fullUrl() {
         return `${this.url}:${this.port}/${this.database}`;
     }
     _connect() {
-        return mongoose.connect(this.fullUrl);
+        console.log(this.fullUrl);
+        return mongoose_1.default.connect(this.fullUrl);
     }
 }
-module.exports = new Database();
+const database = new Database();
+exports.default = database;
 //# sourceMappingURL=Database.js.map

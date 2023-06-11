@@ -1,12 +1,12 @@
-import httpStatus from "http-status";
-import mongoose from "mongoose";
+import { BAD_REQUEST } from "http-status";
+import { Schema, model } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { ApiError } from "../utils/ApiError";
 import { tokenMessages } from "../messages";
-import { IUser } from "src/types";
-const Schema = mongoose.Schema;
+import { IUser, UserModel } from "../types";
+import { NextFunction } from "express";
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUser, UserModel>(
   {
     email: {
       type: String,
@@ -36,32 +36,27 @@ const userSchema = new Schema(
 );
 
 // static login method
-userSchema.statics.login = async function (email, password) {
+userSchema.statics.login = async function (
+  email: string,
+  password: string
+): Promise<IUser> {
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(
-      tokenMessages.error.INVALID_CREDS,
-      httpStatus.BAD_REQUEST
-    );
+    throw new ApiError(tokenMessages.error.INVALID_CREDS, BAD_REQUEST);
   }
   if (user && !(await bcrypt.compare(password, user.password))) {
-    throw new ApiError(
-      tokenMessages.error.INVALID_CREDS,
-      httpStatus.BAD_REQUEST
-    );
+    throw new ApiError(tokenMessages.error.INVALID_CREDS, BAD_REQUEST);
   }
   return user;
 };
 
 /**
  * deleting few fields before sending it to user!
- * @returns {Partial<typeof userSchema>}
+ * @returns {Partial<IUser>}
  */
-userSchema.methods.toJSON = function (): Partial<typeof userSchema> {
+userSchema.methods.toJSON = function (): Partial<IUser> {
   const user = this.toObject();
   delete user.password;
-  delete user.createdAt;
-  delete user.updatedAt;
   delete user.tokens;
   return user;
 };
@@ -69,20 +64,12 @@ userSchema.methods.toJSON = function (): Partial<typeof userSchema> {
 /**
  * Hashing the password before storing the actual user into the database!
  */
-userSchema.pre("save", async function (next): Promise<void> {
+userSchema.pre("save", async function (next: NextFunction): Promise<void> {
   const user = this;
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
   next();
 });
-/**
- * Delete relational Data with User
- */
-userSchema.pre("remove", async function (next): Promise<void> {
-  const user = this;
-  // await Task.deleteMany({ owner: user._id })
-  next();
-});
 
-export const User = mongoose.model<IUser>("User", userSchema);
+export const User = model<IUser, UserModel>("User", userSchema);

@@ -1,5 +1,5 @@
-import httpStatus from "http-status";
-import multer from "multer";
+import { BAD_REQUEST } from "http-status";
+import * as multer from "multer";
 import { User } from "../models";
 import { ApiError } from "../utils/ApiError";
 import { userMessages } from "../messages";
@@ -74,10 +74,7 @@ export const updateUserById = async (id, body, filters = {}) => {
     new: true,
   });
   if (!user) {
-    throw new ApiError(
-      userMessages.error.USER_NOT_FOUND,
-      httpStatus.BAD_REQUEST
-    );
+    throw new ApiError(userMessages.error.USER_NOT_FOUND, BAD_REQUEST);
   }
   return user;
 };
@@ -104,10 +101,7 @@ export const updateUserProfile = async (user, body) => {
 export const deleteUserById = async (id, filters = {}) => {
   const user = await User.findOneAndRemove({ _id: id, ...filters });
   if (!user) {
-    throw new ApiError(
-      userMessages.error.USER_NOT_FOUND,
-      httpStatus.BAD_REQUEST
-    );
+    throw new ApiError(userMessages.error.USER_NOT_FOUND, BAD_REQUEST);
   }
   return user;
 };

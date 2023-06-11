@@ -1,17 +1,17 @@
-require("dotenv").config({ path: "../.env" });
+require("dotenv").config({ path: __dirname + "/../.env" });
 import * as express from "express";
-import cors from "cors";
-import path from "path";
+import * as cors from "cors";
+import * as path from "path";
 import database from "./db/Database";
 import { config } from "./config";
-const { errorController } = require("./controllers");
-const routes = require("./routes");
-const cookieParser = require("cookie-parser");
-const ApiError = require("./utils/ApiError");
-const httpStatus = require("http-status");
-const catchAsync = require("./utils/catchAsync");
-const { tokenMessages } = require("./messages");
-const swaggerDocs = require("./utils/swagger");
+import { errorController } from "./controllers";
+import routes from "./routes";
+import * as cookieParser from "cookie-parser";
+import { ApiError } from "./utils/ApiError";
+import { NOT_FOUND } from "http-status";
+import { catchAsync } from "./utils/catchAsync";
+import { tokenMessages } from "./messages";
+import { swaggerDocs } from "./utils/swagger";
 const app = express();
 const port = config.system.port;
 
@@ -20,17 +20,19 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use("/api/v1", routes);
-app.use(express.static("public"));
-app.use("/avatar", express.static(path.join(__dirname, "Assets", "Avatar")));
-swaggerDocs(app, port);
+app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(
+  "/avatar",
+  express.static(path.join(__dirname, "..", "Assets", "Avatar"))
+);
+
+swaggerDocs(app);
+
 // error handler
 app.all(
   "*",
   catchAsync(async (req, res) => {
-    throw new ApiError(
-      tokenMessages.error.PAGE_NOT_FOUND,
-      httpStatus.NOT_FOUND
-    );
+    throw new ApiError(tokenMessages.error.PAGE_NOT_FOUND, NOT_FOUND);
   })
 );
 app.use(errorController);

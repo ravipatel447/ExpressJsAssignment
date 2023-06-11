@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import config from "../config";
+import { config } from "../config";
 
 class Database {
   url = config.mongodb.url;
@@ -10,6 +10,7 @@ class Database {
     return `${this.url}:${this.port}/${this.database}`;
   }
   _connect() {
+    console.log(this.fullUrl);
     return mongoose.connect(this.fullUrl);
   }
 }
