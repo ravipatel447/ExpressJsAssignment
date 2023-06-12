@@ -1,6 +1,19 @@
 import path from "path";
-require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
-
+let envName = ".dev.env";
+switch (process.env.NODE_ENV) {
+  case "PRODUCTION":
+    envName = ".prod.env";
+    break;
+  case "DEVELOPMENT":
+    envName = ".dev.env";
+    break;
+  case "TEST":
+    envName = ".test.env";
+    break;
+  default:
+    envName = ".dev.env";
+}
+require("dotenv").config({ path: path.resolve(__dirname, "..", envName) });
 import express, { Request, Response, Express } from "express";
 import cors from "cors";
 import database from "./db/Database";
