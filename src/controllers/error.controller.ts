@@ -1,15 +1,15 @@
 import { ValidationError } from "express-validation";
 import { response } from "../utils/response";
 import { ApiError } from "../utils/ApiError";
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { IRequest } from "../types";
 
-export async function errorController(
+export function errorController(
   err: ApiError,
   req: IRequest,
   res: Response,
   _next: NextFunction
-): Promise<void | Response<any, Record<string, any>>> {
+) {
   let message = "";
   let status = 404;
   if (err instanceof ValidationError) {

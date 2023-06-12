@@ -5,7 +5,8 @@
     "module": "commonjs",
     "outDir": "dist",
     "sourceMap": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "skipLibCheck": true
   },
   "files": [
     "./node_modules/@types/node/index.d.ts"

@@ -1,7 +1,8 @@
-require("dotenv").config({ path: __dirname + "/../.env" });
+import path from "path";
+require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
+
 import express, { Request, Response, Express } from "express";
 import cors from "cors";
-import path from "path";
 import database from "./db/Database";
 import { config } from "./config";
 import { errorController } from "./controllers";
