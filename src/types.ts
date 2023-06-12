@@ -19,15 +19,5 @@ export interface UserModel extends Model<IUser> {
 export interface IRequest extends Request {
   user: IUser;
   token: string;
-  file?: multerFile;
-}
-
-export interface multerFile {
-  buffer: Buffer;
-  path: string;
-  encoding: string;
-  fieldname: string;
-  mimetype: string;
-  originalname: string;
-  size: number;
+  file?: Express.Multer.File;
 }

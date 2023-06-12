@@ -3,7 +3,7 @@ import multer from "multer";
 import { User } from "../models";
 import { ApiError } from "../utils/ApiError";
 import { userMessages } from "../messages";
-import { IRequest, IUser, multerFile } from "../types";
+import { IRequest, IUser } from "../types";
 
 /**
  * create User from body
@@ -121,10 +121,14 @@ export const deleteUserById = async (id: String, filters: Object = {}) => {
 };
 
 const storage = multer.diskStorage({
-  destination: function (req: IRequest, _file: multerFile, cb: Function) {
+  destination: function (
+    req: IRequest,
+    _file: Express.Multer.File,
+    cb: Function
+  ) {
     cb(null, "Assets/Avatar");
   },
-  filename: function (req: IRequest, file: multerFile, cb: Function) {
+  filename: function (req: IRequest, file: Express.Multer.File, cb: Function) {
     const userId = req.user._id;
     const mimetype = file.mimetype.split("/")[1];
     cb(null, file.fieldname + "-" + userId + "." + mimetype);
