@@ -8,8 +8,8 @@ export async function errorController(
   err: ApiError,
   req: IRequest,
   res: Response,
-  next: NextFunction
-) {
+  _next: NextFunction
+): Promise<void | Response<any, Record<string, any>>> {
   let message = "";
   let status = 404;
   if (err instanceof ValidationError) {

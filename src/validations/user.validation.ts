@@ -1,6 +1,6 @@
 import { Joi } from "express-validation";
 
-export const updateValidation = {
+export const updateValidation: Object = {
   body: Joi.object().keys({
     firstName: Joi.string(),
     lastName: Joi.string(),

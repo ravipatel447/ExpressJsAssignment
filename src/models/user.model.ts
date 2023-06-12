@@ -1,6 +1,6 @@
 import { BAD_REQUEST } from "http-status";
 import { Schema, model } from "mongoose";
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import { ApiError } from "../utils/ApiError";
 import { tokenMessages } from "../messages";
 import { IUser, UserModel } from "../types";

@@ -1,15 +1,16 @@
 import { BAD_REQUEST } from "http-status";
-import * as multer from "multer";
+import multer from "multer";
 import { User } from "../models";
 import { ApiError } from "../utils/ApiError";
 import { userMessages } from "../messages";
+import { IRequest, IUser, multerFile } from "../types";
 
 /**
  * create User from body
  * @param {Object} body
  * @returns {Promise<User>}
  */
-export const createUser = async (body) => {
+export const createUser = async (body: typeof User): Promise<IUser> => {
   const user = new User(body);
   return user.save();
 };
@@ -17,9 +18,12 @@ export const createUser = async (body) => {
 /**
  * @param {String} url urlString
  * @param {Object} user user Object
- * @returns {Promise<User>}
+ * @returns {Promise<IUser>}
  */
-export const uploadProfileImage = async (url, user) => {
+export const uploadProfileImage = async (
+  url: string,
+  user: IUser
+): Promise<IUser> => {
   user.profileUrl = url;
   return user.save();
 };
@@ -28,7 +32,7 @@ export const uploadProfileImage = async (url, user) => {
  * @param {Object} user user Object
  * @returns {Promise<User>}
  */
-export const removeProfileImage = async (user) => {
+export const removeProfileImage = async (user: IUser): Promise<IUser> => {
   user.profileUrl = "https://i.stack.imgur.com/l60Hf.png";
   return user.save();
 };
@@ -36,9 +40,9 @@ export const removeProfileImage = async (user) => {
 /**
  * get users list
  * @param {Object} filters
- * @returns {Array<Promise<User>>}
+ * @returns {Promise<IUser[]>}
  */
-export const getUsers = async (filters = {}) => {
+export const getUsers = async (filters = {}): Promise<IUser[]> => {
   return User.find(filters);
 };
 
@@ -47,7 +51,7 @@ export const getUsers = async (filters = {}) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-export const getUserByFilter = async (filters = {}) => {
+export const getUserByFilter = async (filters: object = {}): Promise<IUser> => {
   return User.findOne(filters);
 };
 
@@ -57,7 +61,10 @@ export const getUserByFilter = async (filters = {}) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-export const getUserById = async (id, filters) => {
+export const getUserById = async (
+  id: string,
+  filters: Object
+): Promise<IUser> => {
   return getUserByFilter({ _id: id, ...filters });
 };
 
@@ -68,7 +75,11 @@ export const getUserById = async (id, filters) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-export const updateUserById = async (id, body, filters = {}) => {
+export const updateUserById = async (
+  id: string,
+  body: typeof User,
+  filters: Object = {}
+): Promise<IUser> => {
   const user = await User.findOneAndUpdate({ _id: id, ...filters }, body, {
     runValidators: true,
     new: true,
@@ -84,7 +95,10 @@ export const updateUserById = async (id, body, filters = {}) => {
  * @param {Object} body updates
  * @returns {Promise<User>}
  */
-export const updateUserProfile = async (user, body) => {
+export const updateUserProfile = async (
+  user: IUser,
+  body: typeof User
+): Promise<IUser> => {
   const updates = Object.keys(body);
   updates.forEach((update) => {
     user[update] = body[update];
@@ -98,7 +112,7 @@ export const updateUserProfile = async (user, body) => {
  * @param {Object} filters
  * @returns {Promise<User>}
  */
-export const deleteUserById = async (id, filters = {}) => {
+export const deleteUserById = async (id: String, filters: Object = {}) => {
   const user = await User.findOneAndRemove({ _id: id, ...filters });
   if (!user) {
     throw new ApiError(userMessages.error.USER_NOT_FOUND, BAD_REQUEST);
@@ -107,17 +121,17 @@ export const deleteUserById = async (id, filters = {}) => {
 };
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function (req: IRequest, _file: multerFile, cb: Function) {
     cb(null, "Assets/Avatar");
   },
-  filename: function (req, file, cb) {
+  filename: function (req: IRequest, file: multerFile, cb: Function) {
     const userId = req.user._id;
     const mimetype = file.mimetype.split("/")[1];
     cb(null, file.fieldname + "-" + userId + "." + mimetype);
   },
 });
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (_req: IRequest, file: any, cb: Function) => {
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||

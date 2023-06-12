@@ -1,7 +1,7 @@
 import { Request } from "express";
-import { Model } from "mongoose";
+import { Model, ObjectId, Document } from "mongoose";
 
-export interface IUser {
+export interface IUser extends Document {
   email: string;
   firstName: string;
   lastName: string;
@@ -18,4 +18,16 @@ export interface UserModel extends Model<IUser> {
 
 export interface IRequest extends Request {
   user: IUser;
+  token: string;
+  file?: multerFile;
+}
+
+export interface multerFile {
+  buffer: Buffer;
+  path: string;
+  encoding: string;
+  fieldname: string;
+  mimetype: string;
+  originalname: string;
+  size: number;
 }

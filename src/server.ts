@@ -1,19 +1,20 @@
 require("dotenv").config({ path: __dirname + "/../.env" });
-import * as express from "express";
-import * as cors from "cors";
-import * as path from "path";
+import express, { Request, Response, Express } from "express";
+import cors from "cors";
+import path from "path";
 import database from "./db/Database";
 import { config } from "./config";
 import { errorController } from "./controllers";
 import routes from "./routes";
-import * as cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 import { ApiError } from "./utils/ApiError";
 import { NOT_FOUND } from "http-status";
 import { catchAsync } from "./utils/catchAsync";
 import { tokenMessages } from "./messages";
 import { swaggerDocs } from "./utils/swagger";
-const app = express();
-const port = config.system.port;
+
+const app: Express = express();
+const port: number = config.system.port;
 
 app.use(express.json());
 app.use(cors());
@@ -31,7 +32,7 @@ swaggerDocs(app);
 // error handler
 app.all(
   "*",
-  catchAsync(async (req, res) => {
+  catchAsync(async (_req: Request, _res: Response) => {
     throw new ApiError(tokenMessages.error.PAGE_NOT_FOUND, NOT_FOUND);
   })
 );
@@ -45,6 +46,6 @@ database
       console.log(`[SERVER][START]: http://localhost:${port}/`);
     });
   })
-  .catch((err) => {
+  .catch((err: Error) => {
     console.log(`[SERVER][ERROR]: `, err);
   });

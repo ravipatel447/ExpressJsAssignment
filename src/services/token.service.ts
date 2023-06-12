@@ -1,16 +1,17 @@
 import { BAD_REQUEST } from "http-status";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { User } from "../models";
 import { config } from "../config";
 import { ApiError } from "../utils/ApiError";
 import { tokenMessages } from "../messages";
+import { IUser } from "../types";
 
 /**
  * Generate jwt signed token for user
- * @param {Object<User>} user
- * @returns {String}
+ * @param {Object<IUser>} user
+ * @returns {Promise<string>}
  */
-export const generateUserToken = async (user) => {
+export const generateUserToken = async (user: IUser): Promise<string> => {
   const token = await jwt.sign({ user: user._id }, config.jwt.secret, {
     expiresIn: config.jwt.expires,
   });
@@ -22,9 +23,9 @@ export const generateUserToken = async (user) => {
 /**
  * Verify user and return user if valid jwt token
  * @param {String} token jwt token string
- * @returns {Object<User>}
+ * @returns {Promise<IUser>}
  */
-export const verifyToken = async (token) => {
+export const verifyToken = async (token: string): Promise<IUser> => {
   let { user } = jwt.verify(token, config.jwt.secret);
   user = await User.findOne({
     _id: user,

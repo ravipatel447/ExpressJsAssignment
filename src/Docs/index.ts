@@ -6,8 +6,9 @@ import { security } from "./security";
 import { auth } from "./auth";
 import { avatar } from "./avatar";
 import { user } from "./user";
+import { JsonObject } from "swagger-ui-express";
 
-export const docs = {
+export const docs: JsonObject = {
   ...basicInfo,
   ...components,
   ...security,

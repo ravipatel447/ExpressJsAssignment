@@ -1,6 +1,11 @@
 import { Response } from "express";
 export const response = {
-  successResponse(res: Response, status: number, data: any, message: string) {
+  successResponse(
+    res: Response,
+    status: number,
+    data: Object,
+    message: string
+  ): Response<any, Record<string, any>> {
     return res.status(status).send({
       status,
       message,
@@ -8,7 +13,12 @@ export const response = {
       error: false,
     });
   },
-  errorResponse(res: Response, status: number, data: any, message: string) {
+  errorResponse(
+    res: Response,
+    status: number,
+    data: Object,
+    message: string
+  ): Response<any, Record<string, any>> {
     return res.status(status).send({
       status,
       message,

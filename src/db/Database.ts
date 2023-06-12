@@ -15,6 +15,6 @@ class Database {
   }
 }
 
-const database = new Database();
+const database: Database = new Database();
 
 export default database;
