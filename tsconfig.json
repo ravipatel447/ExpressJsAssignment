@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "rootDir": "src"
+  },
+  "files": [
+    "./node_modules/@types/node/index.d.ts"
+  ],
+  "include": [
+    "src/"
+, "public"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
